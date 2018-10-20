@@ -1,0 +1,5 @@
+[{"template" : [["Which companies are", "What companies are", "Who is"], ["Similar to", "Correlated to"], ["Company"]], "label": 1 },
+  {"template" : [["Which company is", "What company is", "Who is"], ["Similar to", "Correlated to", "Competing with"], ["Company"]], "label": 2 },
+  {"template" : [["Show", "Show me", "Find", "Find me"], ["Company"], ["Statistic"]], "label": 3 },
+  {"template" : [["Is", "How similar is"], ["_company_"], ["better than", "to", "dependent"], ["_company_"], "label": 4
+]
