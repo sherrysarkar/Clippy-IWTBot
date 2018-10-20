@@ -1,5 +1,7 @@
 import json
 import itertools
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn import neural_network
 
 def parse_data():
     with open('dataset.json') as data_file:
@@ -23,11 +25,13 @@ def parse_data():
                 if number != len(element) - 1:
                     sentence += " "
             s = sentence.lower()
-            X.append(s)
+            ## S is the setence, here is a word.
+            X.append([s])
             Y.append(labels[j])
 
     return X, Y
 
 X, Y = parse_data()
-print(X)
-print(Y, len(Y))
+
+
+
