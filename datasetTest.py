@@ -17,12 +17,12 @@ auth_data = {
 session = requests.Session()
 
 auth_request = session.post("https://idfs.gs.com/as/token.oauth2", data = auth_data)
-print('Response {}'.format(auth_request.text))
+# print('Response {}'.format(auth_request.text))
 
 access_token_dict = json.loads(auth_request.text)
 access_token = access_token_dict["access_token"]
 
-print('Access Token {}'.format(access_token))
+# print('Access Token {}'.format(access_token))
 
 # update session headers with access token
 session.headers.update({"Authorization":"Bearer "+ access_token})
@@ -80,7 +80,7 @@ multipleScores = {company: [] for company in companies}
 finReturnScores = {company: [] for company in companies}
 intergratedScores = {company: [] for company in companies}
 X = {company: 0 for company in companies}
-dates = {company: [] for company in companies}
+days = {company: [] for company in companies}
 
 for j, entry in enumerate(data):
     comp = entry['ticker']
@@ -90,14 +90,14 @@ for j, entry in enumerate(data):
     intergratedScores[comp].append(entry['integratedScore'])
     X[comp] += 1
     num_days = (date(*(int(a) for a in entry['date'].split('-'))) - start_date).days
-    dates[comp].append(num_days)
+    days[comp].append(num_days)
 
 
 print({comp: len(growthScores[comp]) for comp in companies})
 
 fig, ax = plt.subplots()
-plt.plot(dates['AAPL'], finReturnScores['AAPL'], color="green")
-plt.plot(dates['FB'], finReturnScores['FB'], color="blue")
+plt.plot(days['AAPL'], finReturnScores['AAPL'], color="green")
+plt.plot(days['FB'], finReturnScores['FB'], color="blue")
 
 #print(np.corrcoef(finReturnScores['AAPL'][:75], finReturnScores['FB'][:75])[0, 1])
 

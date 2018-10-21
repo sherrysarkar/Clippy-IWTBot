@@ -3,6 +3,10 @@ import json
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+from datetime import date
+
+START_DATE = date(2017, 1, 15)
+
 
 def request_data():
     auth_data = {
@@ -16,42 +20,54 @@ def request_data():
     session = requests.Session()
 
     auth_request = session.post("https://idfs.gs.com/as/token.oauth2", data=auth_data)
-    print('Response {}'.format(auth_request.text))
+    # print('Response {}'.format(auth_request.text))
 
     access_token_dict = json.loads(auth_request.text)
     access_token = access_token_dict["access_token"]
 
-    print('Access Token {}'.format(access_token))
+    # print('Access Token {}'.format(access_token))
 
     # update session headers with access token
     session.headers.update({"Authorization": "Bearer " + access_token})
 
-    coverage_request_url = 'https://api.marquee.gs.com/v1/data/USCANFPP_MINI/coverage?limit=100'
+    coverage_request_url = 'https://api.marquee.gs.com/v1/data/USCANFPP_MINI/coverage?limit=500'
     request_url = "https://api.marquee.gs.com/v1/data/USCANFPP_MINI/query"
     reference_request_url = 'https://api.marquee.gs.com/v1/assets/data/query'
+
 
     companies = ['AAPL', 'FB']
     request_query = {
         "where": {
             "ticker": companies
         },
-        "startDate": '2017-01-15',
-        "endDate": '2018-01-15'
+        "startDate": START_DATE.isoformat(),
+        # "endDate":'2018-01-15'
     }
 
-    # coverage = session.get(url=coverage_request_url)
-    # coverage_data = json.loads(coverage.text)
-    # print(coverage_data)
+    coverage = session.get(url=coverage_request_url)
+    coverage_data = json.loads(coverage.text)
 
-    # reference = session.post(url=reference_request_url, json=reference_query)
-    # reference_data = json.loads(reference.text)
-    # print(reference_data)
+    reference_query = {
+        'where': {
+            'gsid': [datapoint['gsid'] for datapoint in coverage_data['results']]
+        },
+        'fields': ['gsid', 'ticker', 'name'],
+        'limit': 500
+    }
+
+    reference = session.post(url=reference_request_url, json=reference_query)
+    reference_data = json.loads(reference.text)
+    companies_set = {(result['ticker'], result['name']) for result in reference_data['results']}
+
+    # Print out all companies
+    print('{} companies:'.format(len(companies_set)))
+    print('\n'.join([str(asdf) for asdf in list(companies_set)]))
 
     request = session.post(url=request_url, json=request_query)
     results = json.loads(request.text)
     data = results['data']
 
-    #print(data[0])
+    # print(data)
 
     ###### Graphing #######
 
@@ -69,6 +85,7 @@ def correlation_calculations(data, companies):
     F0D_multipleScores = {company: [] for company in companies}
     F0D_finReturnScores = {company: [] for company in companies}
     F0D_intergratedScores = {company: [] for company in companies}
+    days = {company: [] for company in companies}
 
     for entry in data:
         comp = entry['ticker']
@@ -77,6 +94,12 @@ def correlation_calculations(data, companies):
         finReturnScores[comp].append(entry['financialReturnsScore'])
         intergratedScores[comp].append(entry['integratedScore'])
         X[comp] += 1
+        num_days = (date(*(int(a) for a in entry['date'].split('-'))) - START_DATE).days
+        days[comp].append(num_days)
+
+        if len(days[comp]) >= 2 and days[comp][-1] <= days[comp][-2]:
+            print('RIPPPP')
+            assert False
 
         if X[comp] > 1:
             F0D_growthScores[comp].append(growthScores[comp][X[comp] - 1] - growthScores[comp][X[comp] - 2])
@@ -88,8 +111,8 @@ def correlation_calculations(data, companies):
 
 
     print(np.corrcoef(F0D_finReturnScores['AAPL'], F0D_finReturnScores['FB'])[0, 1])
-    plt.plot(range(X['AAPL'] - 1), F0D_finReturnScores['AAPL'], color="green")
-    plt.plot(range(X['FB'] - 1), F0D_finReturnScores['FB'], color="blue")
+    plt.plot(days['AAPL'][:-1], F0D_finReturnScores['AAPL'], color="green")
+    plt.plot(days['FB'][:-1], F0D_finReturnScores['FB'], color="blue")
 
     plt.show()
 
