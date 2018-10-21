@@ -4,8 +4,9 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from datetime import date
+import math
 
-START_DATE = date(2015, 1, 15)
+START_DATE = date(2017, 1, 15)
 
 
 def request_data():
@@ -130,16 +131,22 @@ def correlation_calculations():
 
     #print({comp: len(growthScores[comp]) for comp in companies})
 
+    stat_jsons = {}
     for stat in stats:
         print()
+        stat_jsons[stat] = {'nodes': [], 'links': []}
         print('Correlations for FOD {}'.format(stat))
         for f_company in companies:
+            stat_jsons[stat]['nodes'].append({'id': f_company, 'group': 0})
             for s_company in companies:
                 # print(f_company, s_company)
                 # print('lengths of stat arrays: {}, {}'.format(len(company_FOD_stats[f_company]['growthScore']), len(company_FOD_stats[s_company]['growthScore'])))
+
                 c = np.corrcoef(company_FOD_stats[f_company][stat], company_FOD_stats[s_company][stat])[0, 1]
-                if c > 0.5 and f_company != s_company:
+                if c > 0.8 and f_company != s_company:
                     print(f_company, s_company, c)
+                    stat_jsons[stat]['links'].append({'source': f_company, 'target': s_company, 'value': math.ceil((c - 0.8) * 80)})
+        json.dump(stat_jsons[stat], open('{}_data.json'.format(stat), 'w'), indent=2)
 
     correlations = []
     #print(np.corrcoef(F0D_finReturnScores['AAPL'], F0D_finReturnScores['FB'])[0, 1])

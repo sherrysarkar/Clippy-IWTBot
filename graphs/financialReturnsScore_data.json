@@ -1,0 +1,586 @@
+{
+  "nodes": [
+    {
+      "id": "KORS",
+      "group": 0
+    },
+    {
+      "id": "CSOD",
+      "group": 0
+    },
+    {
+      "id": "IBM",
+      "group": 0
+    },
+    {
+      "id": "CCE",
+      "group": 0
+    },
+    {
+      "id": "STX",
+      "group": 0
+    },
+    {
+      "id": "WDC",
+      "group": 0
+    },
+    {
+      "id": "AVGO",
+      "group": 0
+    },
+    {
+      "id": "FLIR",
+      "group": 0
+    },
+    {
+      "id": "PAY",
+      "group": 0
+    },
+    {
+      "id": "ULTI",
+      "group": 0
+    },
+    {
+      "id": "STZ",
+      "group": 0
+    },
+    {
+      "id": "BBY",
+      "group": 0
+    },
+    {
+      "id": "CHKP",
+      "group": 0
+    },
+    {
+      "id": "LULU",
+      "group": 0
+    },
+    {
+      "id": "TSLA",
+      "group": 0
+    },
+    {
+      "id": "TJX",
+      "group": 0
+    },
+    {
+      "id": "LL",
+      "group": 0
+    },
+    {
+      "id": "WEX",
+      "group": 0
+    },
+    {
+      "id": "CNK",
+      "group": 0
+    },
+    {
+      "id": "SYMC",
+      "group": 0
+    },
+    {
+      "id": "ZNGA",
+      "group": 0
+    },
+    {
+      "id": "GLW",
+      "group": 0
+    },
+    {
+      "id": "K",
+      "group": 0
+    },
+    {
+      "id": "CLX",
+      "group": 0
+    },
+    {
+      "id": "CL",
+      "group": 0
+    },
+    {
+      "id": "CBS",
+      "group": 0
+    },
+    {
+      "id": "ARW",
+      "group": 0
+    },
+    {
+      "id": "FISV",
+      "group": 0
+    },
+    {
+      "id": "RCL",
+      "group": 0
+    },
+    {
+      "id": "WDAY",
+      "group": 0
+    },
+    {
+      "id": "AKAM",
+      "group": 0
+    },
+    {
+      "id": "RL",
+      "group": 0
+    },
+    {
+      "id": "DIS",
+      "group": 0
+    },
+    {
+      "id": "GIB",
+      "group": 0
+    },
+    {
+      "id": "RAD",
+      "group": 0
+    },
+    {
+      "id": "CRM",
+      "group": 0
+    },
+    {
+      "id": "MGA",
+      "group": 0
+    },
+    {
+      "id": "MO",
+      "group": 0
+    },
+    {
+      "id": "MU",
+      "group": 0
+    },
+    {
+      "id": "MXIM",
+      "group": 0
+    },
+    {
+      "id": "BBBY",
+      "group": 0
+    },
+    {
+      "id": "FSLR",
+      "group": 0
+    },
+    {
+      "id": "RGC",
+      "group": 0
+    },
+    {
+      "id": "AZO",
+      "group": 0
+    },
+    {
+      "id": "ADM",
+      "group": 0
+    },
+    {
+      "id": "NTAP",
+      "group": 0
+    },
+    {
+      "id": "HSY",
+      "group": 0
+    },
+    {
+      "id": "EXPE",
+      "group": 0
+    },
+    {
+      "id": "IPG",
+      "group": 0
+    },
+    {
+      "id": "WYNN",
+      "group": 0
+    },
+    {
+      "id": "ADTN",
+      "group": 0
+    },
+    {
+      "id": "KO",
+      "group": 0
+    },
+    {
+      "id": "CCL",
+      "group": 0
+    },
+    {
+      "id": "PAYX",
+      "group": 0
+    },
+    {
+      "id": "ULTA",
+      "group": 0
+    },
+    {
+      "id": "FB",
+      "group": 0
+    },
+    {
+      "id": "GRMN",
+      "group": 0
+    },
+    {
+      "id": "COST",
+      "group": 0
+    },
+    {
+      "id": "ADP",
+      "group": 0
+    },
+    {
+      "id": "GPS",
+      "group": 0
+    },
+    {
+      "id": "KR",
+      "group": 0
+    },
+    {
+      "id": "AAPL",
+      "group": 0
+    },
+    {
+      "id": "ODP",
+      "group": 0
+    },
+    {
+      "id": "ADSK",
+      "group": 0
+    },
+    {
+      "id": "CMCSA",
+      "group": 0
+    },
+    {
+      "id": "KLAC",
+      "group": 0
+    },
+    {
+      "id": "GRPN",
+      "group": 0
+    },
+    {
+      "id": "PG",
+      "group": 0
+    },
+    {
+      "id": "V",
+      "group": 0
+    },
+    {
+      "id": "TIF",
+      "group": 0
+    },
+    {
+      "id": "WMT",
+      "group": 0
+    },
+    {
+      "id": "GPN",
+      "group": 0
+    },
+    {
+      "id": "TSCO",
+      "group": 0
+    },
+    {
+      "id": "VMW",
+      "group": 0
+    },
+    {
+      "id": "VECO",
+      "group": 0
+    },
+    {
+      "id": "TXN",
+      "group": 0
+    },
+    {
+      "id": "DKS",
+      "group": 0
+    },
+    {
+      "id": "NFLX",
+      "group": 0
+    },
+    {
+      "id": "JNPR",
+      "group": 0
+    },
+    {
+      "id": "GT",
+      "group": 0
+    },
+    {
+      "id": "KMB",
+      "group": 0
+    },
+    {
+      "id": "INFN",
+      "group": 0
+    },
+    {
+      "id": "GM",
+      "group": 0
+    },
+    {
+      "id": "TAP",
+      "group": 0
+    },
+    {
+      "id": "INTU",
+      "group": 0
+    },
+    {
+      "id": "FLT",
+      "group": 0
+    },
+    {
+      "id": "ADS",
+      "group": 0
+    },
+    {
+      "id": "APH",
+      "group": 0
+    },
+    {
+      "id": "TGT",
+      "group": 0
+    },
+    {
+      "id": "EBAY",
+      "group": 0
+    },
+    {
+      "id": "SFLY",
+      "group": 0
+    },
+    {
+      "id": "PVH",
+      "group": 0
+    },
+    {
+      "id": "FLEX",
+      "group": 0
+    },
+    {
+      "id": "ROST",
+      "group": 0
+    },
+    {
+      "id": "MA",
+      "group": 0
+    }
+  ],
+  "links": [
+    {
+      "source": "KORS",
+      "target": "LULU",
+      "value": 11
+    },
+    {
+      "source": "KORS",
+      "target": "RL",
+      "value": 13
+    },
+    {
+      "source": "KORS",
+      "target": "TIF",
+      "value": 10
+    },
+    {
+      "source": "CSOD",
+      "target": "GT",
+      "value": 2
+    },
+    {
+      "source": "LULU",
+      "target": "KORS",
+      "value": 11
+    },
+    {
+      "source": "LULU",
+      "target": "RL",
+      "value": 10
+    },
+    {
+      "source": "LULU",
+      "target": "TIF",
+      "value": 7
+    },
+    {
+      "source": "TSLA",
+      "target": "INFN",
+      "value": 2
+    },
+    {
+      "source": "ZNGA",
+      "target": "CRM",
+      "value": 9
+    },
+    {
+      "source": "ZNGA",
+      "target": "ADSK",
+      "value": 10
+    },
+    {
+      "source": "GLW",
+      "target": "WYNN",
+      "value": 9
+    },
+    {
+      "source": "GLW",
+      "target": "ODP",
+      "value": 12
+    },
+    {
+      "source": "GLW",
+      "target": "GM",
+      "value": 10
+    },
+    {
+      "source": "WDAY",
+      "target": "MU",
+      "value": 11
+    },
+    {
+      "source": "RL",
+      "target": "KORS",
+      "value": 13
+    },
+    {
+      "source": "RL",
+      "target": "LULU",
+      "value": 10
+    },
+    {
+      "source": "RL",
+      "target": "TIF",
+      "value": 10
+    },
+    {
+      "source": "CRM",
+      "target": "ZNGA",
+      "value": 9
+    },
+    {
+      "source": "CRM",
+      "target": "ADSK",
+      "value": 7
+    },
+    {
+      "source": "MU",
+      "target": "WDAY",
+      "value": 11
+    },
+    {
+      "source": "WYNN",
+      "target": "GLW",
+      "value": 9
+    },
+    {
+      "source": "WYNN",
+      "target": "ODP",
+      "value": 10
+    },
+    {
+      "source": "WYNN",
+      "target": "GM",
+      "value": 9
+    },
+    {
+      "source": "GPS",
+      "target": "PVH",
+      "value": 11
+    },
+    {
+      "source": "ODP",
+      "target": "GLW",
+      "value": 12
+    },
+    {
+      "source": "ODP",
+      "target": "WYNN",
+      "value": 10
+    },
+    {
+      "source": "ODP",
+      "target": "GM",
+      "value": 11
+    },
+    {
+      "source": "ADSK",
+      "target": "ZNGA",
+      "value": 10
+    },
+    {
+      "source": "ADSK",
+      "target": "CRM",
+      "value": 7
+    },
+    {
+      "source": "TIF",
+      "target": "KORS",
+      "value": 10
+    },
+    {
+      "source": "TIF",
+      "target": "LULU",
+      "value": 7
+    },
+    {
+      "source": "TIF",
+      "target": "RL",
+      "value": 10
+    },
+    {
+      "source": "VECO",
+      "target": "GT",
+      "value": 1
+    },
+    {
+      "source": "GT",
+      "target": "CSOD",
+      "value": 2
+    },
+    {
+      "source": "GT",
+      "target": "VECO",
+      "value": 1
+    },
+    {
+      "source": "INFN",
+      "target": "TSLA",
+      "value": 2
+    },
+    {
+      "source": "GM",
+      "target": "GLW",
+      "value": 10
+    },
+    {
+      "source": "GM",
+      "target": "WYNN",
+      "value": 9
+    },
+    {
+      "source": "GM",
+      "target": "ODP",
+      "value": 11
+    },
+    {
+      "source": "PVH",
+      "target": "GPS",
+      "value": 11
+    }
+  ]
+}
