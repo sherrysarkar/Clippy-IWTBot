@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from datetime import date
 
-START_DATE = date(2017, 1, 15)
+START_DATE = date(2015, 1, 15)
 
 
 def request_data():
@@ -47,33 +47,30 @@ def request_data():
 
     reference = session.post(url=reference_request_url, json=reference_query)
     reference_data = json.loads(reference.text)
-    companies_set = {(result['ticker'], result['name']) for result in reference_data['results']}
+    companies_set = {(result['ticker'], result['name'], result['gsid']) for result in reference_data['results']}
 
-    i = 0
-    cp = [x[0] for x in companies_set]
-    with open('companydata.json', 'w') as outfile:
-        outfile.write('[\n')
-        while i < len(cp) - 2:
-            print(cp[i])
-            cps = [cp[i]]
-            request_query = {
-                "where": {
-                    "ticker": cps
-                },
-                "startDate": START_DATE.isoformat(),
-                # "endDate":'2018-01-15'
-            }
+    companies_list = [x[2] for x in companies_set]
+    companies_dict = {x[2]: x[0] for x in companies_set}
+    data_list = []
+    for cp in companies_list:
+        request_query = {
+            "where": {
+                "gsid": [cp]
+            },
+            "startDate": START_DATE.isoformat(),
+            # "endDate":'2018-01-15'
+        }
 
-            request = session.post(url=request_url, json=request_query)
-            results = json.loads(request.text)
-            print(results)
-            print()
-            json_data = results
-            json.dump(json_data, outfile)
-            outfile.write(',\n')
+        request = session.post(url=request_url, json=request_query)
+        results = json.loads(request.text)
+        print('{} - {}'.format(companies_dict[cp], len(results['data'])))
 
-            i += 1
-        outfile.write(']')
+        for entry in results['data']:
+            entry['ticker'] = companies_dict[cp]
+        data_list.append({'company': companies_dict[cp], 'data': results['data']})
+
+    print('Total number of companies: {}'.format(len(data_list)))
+    json.dump(data_list, open('companies_data.json', 'w'), indent=2)
     # print(data)
 
     ###### Graphing #######
@@ -83,77 +80,76 @@ def request_data():
     return companies_set
 
 def correlation_calculations():
-    with open('companydata.json') as data_file:
-        file = json.load(data_file)
+    with open('companies_data.json') as data_file:
+        company_data = json.load(data_file)
+
+    stats = ['growthScore', 'multipleScore', 'financialReturnsScore', 'integratedScore']
+
+    maxLen = 0
+    for entry in company_data:
+        maxLen = max(maxLen, len(entry['data']))
 
     companies = []
-    for i in range(len(file)):
-        #print(file[i])
-        if len(file[i]["data"]) > 0:
-            companies.append(file[i]["data"][0]["ticker"])
+    for entry in company_data:
+        if len(entry['data']) == maxLen:
+            companies.append(entry['company'])
 
-    #print(companies)
+    print('Number of entires per company = {}'.format(maxLen))
+    print('Number of companies with full set of entries = {}'.format(len(companies)))
 
-    growthScores = {company: [] for company in companies}
-    multipleScores = {company: [] for company in companies}
-    finReturnScores = {company: [] for company in companies}
-    intergratedScores = {company: [] for company in companies}
+    company_stats = {company: {stat: [] for stat in stats} for company in companies}
+    company_FOD_stats = {company: {stat: [] for stat in stats} for company in companies}
+
     X = {company: 0 for company in companies}
-    F0D_growthScores = {company: [] for company in companies}
-    F0D_multipleScores = {company: [] for company in companies}
-    F0D_finReturnScores = {company: [] for company in companies}
-    F0D_intergratedScores = {company: [] for company in companies}
     days = {company: [] for company in companies}
 
-    for data_point in file:
+    for data_point in company_data:
         company_time_series = data_point["data"]
-        if len(company_time_series) > 0:
-            if company_time_series[0]['ticker'] not in ['GPS', 'ULTI', 'ADS', 'MO', 'UNFI', 'CSOD', 'GRPN']:
-                #print(company_time_series[0]['ticker'])
-                for entry in company_time_series:
-                    #print(entry)
-                    comp = entry['ticker']
-                    growthScores[comp].append(entry['growthScore'])
-                    multipleScores[comp].append(entry['multipleScore'])
-                    finReturnScores[comp].append(entry['financialReturnsScore'])
-                    intergratedScores[comp].append(entry['integratedScore'])
-                    X[comp] += 1
-                    num_days = (date(*(int(a) for a in entry['date'].split('-'))) - START_DATE).days
-                    days[comp].append(num_days)
+        if len(company_time_series) == maxLen:
+            for entry in company_time_series:
+                #print(entry)
+                comp = entry['ticker']
+                for stat in stats:
+                    if stat in entry.keys():
+                        company_stats[comp][stat].append(entry[stat])
+                    else:
+                        print('key error: {}, {}, {}'.format(comp, X[comp], stat))
+                        company_stats[comp][stat].append(company_stats[comp][stat][-1])
 
-                    if len(days[comp]) >= 2 and days[comp][-1] <= days[comp][-2]:
-                        print('RIPPPP')
-                        assert False
+                num_days = (date(*(int(a) for a in entry['date'].split('-'))) - START_DATE).days
+                days[comp].append(num_days)
+                X[comp] += 1
 
-                    if X[comp] > 1:
-                        F0D_growthScores[comp].append(growthScores[comp][X[comp] - 1] - growthScores[comp][X[comp] - 2])
-                        F0D_multipleScores[comp].append(multipleScores[comp][X[comp] - 1] - multipleScores[comp][X[comp] - 2])
-                        F0D_finReturnScores[comp].append(
-                            finReturnScores[comp][X[comp] - 1] - finReturnScores[comp][X[comp] - 2])
-                        F0D_intergratedScores[comp].append(
-                            intergratedScores[comp][X[comp] - 1] - intergratedScores[comp][X[comp] - 2])
+                # if len(days[comp]) >= 2 and days[comp][-1] != days[comp][-2] + 1:
+                #     print('RIPPPP: {}, {}'.format(comp, days[comp][-1]))
+                #     assert False
+
+                if X[comp] > 1:
+                    for stat in stats:
+                        company_FOD_stats[comp][stat].append(company_stats[comp][stat][X[comp] - 1] - company_stats[comp][stat][X[comp] - 2])
 
     #print({comp: len(growthScores[comp]) for comp in companies})
 
-    for f_company in set(companies) - {'GPS', 'ULTI', 'ADS', 'MO', 'UNFI', 'CSOD', 'GRPN'}:
-        for s_company in set(companies) - {'GPS', 'ULTI', 'ADS', 'MO', 'UNFI', 'CSOD', 'GRPN'}:
-            #print(f_company, s_company)
-            #print(F0D_finReturnScores[f_company])
-            #print(F0D_finReturnScores[s_company])
-            c = np.corrcoef(F0D_intergratedScores[f_company], F0D_intergratedScores[s_company])[0, 1]
-            if abs(c) > 0.8 and f_company != s_company:
-                print(f_company, s_company, c)
-            #print()
+    for stat in stats:
+        print()
+        print('Correlations for FOD {}'.format(stat))
+        for f_company in companies:
+            for s_company in companies:
+                # print(f_company, s_company)
+                # print('lengths of stat arrays: {}, {}'.format(len(company_FOD_stats[f_company]['growthScore']), len(company_FOD_stats[s_company]['growthScore'])))
+                c = np.corrcoef(company_FOD_stats[f_company][stat], company_FOD_stats[s_company][stat])[0, 1]
+                if c > 0.5 and f_company != s_company:
+                    print(f_company, s_company, c)
 
     correlations = []
     #print(np.corrcoef(F0D_finReturnScores['AAPL'], F0D_finReturnScores['FB'])[0, 1])
 
 
-    plt.plot(range(X['KORS'] - 1), F0D_finReturnScores['KORS'], color="green")
-    plt.plot(range(X['LULU'] - 1), F0D_finReturnScores['LULU'], color="blue")
+    plt.plot(range(X['KORS'] - 1), company_FOD_stats['KORS']['financialReturnsScore'], color="green")
+    plt.plot(range(X['LULU'] - 1), company_FOD_stats['LULU']['financialReturnsScore'], color="blue")
 
     plt.show()
     # algorithm - take differences. take corrcoef of that. figure out if first 75 matters (perhaps break it up).
 #
-#data, companies, cs = request_data()
+# print(request_data())
 correlation_calculations()

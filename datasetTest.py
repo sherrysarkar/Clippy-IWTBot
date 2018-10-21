@@ -32,22 +32,9 @@ request_url = "https://api.marquee.gs.com/v1/data/USCANFPP_MINI/query"
 reference_request_url = 'https://api.marquee.gs.com/v1/assets/data/query'
 
 
-start_date = date(2017, 1, 15)
-
-companies = ['AAPL', 'FB']
-request_query = {
-    "where": {
-        "ticker": companies
-    },
-    "startDate": start_date.isoformat(),
-    # "endDate":'2018-01-15'
-}
-
-
 
 coverage = session.get(url=coverage_request_url)
 coverage_data = json.loads(coverage.text)
-print('{} companies'.format(len(coverage_data['results'])))
 
 reference_query = {
     'where': {
@@ -59,45 +46,65 @@ reference_query = {
 
 reference = session.post(url=reference_request_url, json=reference_query)
 reference_data = json.loads(reference.text)
-companies_set = {(result['ticker'], result['name']) for result in reference_data['results']}
+companies_set = {(result['ticker'], result['name'], result['gsid']) for result in reference_data['results']}
 print('{} companies:'.format(len(companies_set)))
 print('\n'.join([str(asdf) for asdf in list(companies_set)]))
 
 
+start_date = date(2010, 1, 15)
+
+companies = ['AAPL', 'FB']
+gsids = ['227284']
+request_query = {
+    "where": {
+        "gsid": gsids
+    },
+    "startDate": start_date.isoformat(),
+    # "endDate":'2018-01-15'
+}
+
+
+
 request = session.post(url=request_url, json=request_query)
 results = json.loads(request.text)
+print(results)
 data = results['data']
 
-print(data[0])
+print(len(data))
 
 ###### Graphing #######
 
 # 'growthScore': 0.234, 'multipleScore': 0.076, 'gsid': '901237', 'financialReturnsScore': 0.71,'c': 0.624
 
+stats = ['growthScore', 'multipleScore', 'financialReturnsScore', 'integratedScore']
 
-growthScores = {company: [] for company in companies}
-multipleScores = {company: [] for company in companies}
-finReturnScores = {company: [] for company in companies}
-intergratedScores = {company: [] for company in companies}
+
+company_stats = {company: {stat: [] for stat in stats} for company in companies}
+
 X = {company: 0 for company in companies}
 days = {company: [] for company in companies}
 
 for j, entry in enumerate(data):
     comp = entry['ticker']
-    growthScores[comp].append(entry['growthScore'])
-    multipleScores[comp].append(entry['multipleScore'])
-    finReturnScores[comp].append(entry['financialReturnsScore'])
-    intergratedScores[comp].append(entry['integratedScore'])
-    X[comp] += 1
+
+    for stat in stats:
+        if stat in entry.keys():
+            company_stats[comp][stat].append(entry[stat])
+        else:
+            print('key error: {}, {}, {}'.format(comp, X[comp], stat))
+            company_stats[comp][stat].append(company_stats[comp][stat][-1])
+
     num_days = (date(*(int(a) for a in entry['date'].split('-'))) - start_date).days
     days[comp].append(num_days)
+    X[comp] += 1
 
 
-print({comp: len(growthScores[comp]) for comp in companies})
+
+print({comp: len(company_stats[comp]['growthScore']) for comp in companies})
 
 fig, ax = plt.subplots()
-plt.plot(days['AAPL'], finReturnScores['AAPL'], color="green")
-plt.plot(days['FB'], finReturnScores['FB'], color="blue")
+plt.plot(days['AAPL'], company_stats['AAPL']['financialReturnsScore'], color="green")
+plt.plot(days['FB'], company_stats['FB']['financialReturnsScore'], color="blue")
 
 #print(np.corrcoef(finReturnScores['AAPL'][:75], finReturnScores['FB'][:75])[0, 1])
 
