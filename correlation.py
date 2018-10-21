@@ -132,12 +132,12 @@ def correlation_calculations():
     #print({comp: len(growthScores[comp]) for comp in companies})
 
     stat_jsons = {}
-    for stat in stats:
+    for i, stat in enumerate(stats):
         print()
         stat_jsons[stat] = {'nodes': [], 'links': []}
         print('Correlations for FOD {}'.format(stat))
         for f_company in companies:
-            stat_jsons[stat]['nodes'].append({'id': f_company, 'group': 0})
+            stat_jsons[stat]['nodes'].append({'id': f_company, 'group': i})
             for s_company in companies:
                 # print(f_company, s_company)
                 # print('lengths of stat arrays: {}, {}'.format(len(company_FOD_stats[f_company]['growthScore']), len(company_FOD_stats[s_company]['growthScore'])))
