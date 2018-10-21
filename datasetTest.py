@@ -3,6 +3,8 @@ import json
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+from datetime import date
+import pandas as pd
 
 auth_data = {
     "grant_type"    : "client_credentials",
@@ -25,28 +27,42 @@ print('Access Token {}'.format(access_token))
 # update session headers with access token
 session.headers.update({"Authorization":"Bearer "+ access_token})
 
-coverage_request_url = 'https://api.marquee.gs.com/v1/data/USCANFPP_MINI/coverage?limit=100'
+coverage_request_url = 'https://api.marquee.gs.com/v1/data/USCANFPP_MINI/coverage?limit=500'
 request_url = "https://api.marquee.gs.com/v1/data/USCANFPP_MINI/query"
 reference_request_url = 'https://api.marquee.gs.com/v1/assets/data/query'
 
 
-companies = ['AAPL', 'GOOGL', 'FB', 'MSFT']
+start_date = date(2017, 1, 15)
+
+companies = ['AAPL', 'FB']
 request_query = {
-                    "where": {
-                        "ticker": companies
-                    },
-                    "startDate": '2017-01-15',
-                    "endDate":'2018-01-15'
-               }
+    "where": {
+        "ticker": companies
+    },
+    "startDate": start_date.isoformat(),
+    # "endDate":'2018-01-15'
+}
 
 
-# coverage = session.get(url=coverage_request_url)
-# coverage_data = json.loads(coverage.text)
-# print(coverage_data)
 
-# reference = session.post(url=reference_request_url, json=reference_query)
-# reference_data = json.loads(reference.text)
-# print(reference_data)
+coverage = session.get(url=coverage_request_url)
+coverage_data = json.loads(coverage.text)
+print('{} companies'.format(len(coverage_data['results'])))
+
+reference_query = {
+    'where': {
+        'gsid': [datapoint['gsid'] for datapoint in coverage_data['results']]
+    },
+    'fields': ['gsid', 'ticker', 'name'],
+    'limit': 500
+}
+
+reference = session.post(url=reference_request_url, json=reference_query)
+reference_data = json.loads(reference.text)
+companies_set = {(result['ticker'], result['name']) for result in reference_data['results']}
+print('{} companies:'.format(len(companies_set)))
+print('\n'.join([str(asdf) for asdf in list(companies_set)]))
+
 
 request = session.post(url=request_url, json=request_query)
 results = json.loads(request.text)
@@ -64,6 +80,7 @@ multipleScores = {company: [] for company in companies}
 finReturnScores = {company: [] for company in companies}
 intergratedScores = {company: [] for company in companies}
 X = {company: 0 for company in companies}
+dates = {company: [] for company in companies}
 
 for j, entry in enumerate(data):
     comp = entry['ticker']
@@ -72,15 +89,18 @@ for j, entry in enumerate(data):
     finReturnScores[comp].append(entry['financialReturnsScore'])
     intergratedScores[comp].append(entry['integratedScore'])
     X[comp] += 1
+    num_days = (date(*(int(a) for a in entry['date'].split('-'))) - start_date).days
+    dates[comp].append(num_days)
 
 
 print({comp: len(growthScores[comp]) for comp in companies})
 
 fig, ax = plt.subplots()
-plt.plot(range(X['AAPL']), finReturnScores['AAPL'], color="green")
-plt.plot(range(X['FB']), finReturnScores['FB'], color="blue")
+plt.plot(dates['AAPL'], finReturnScores['AAPL'], color="green")
+plt.plot(dates['FB'], finReturnScores['FB'], color="blue")
 
 #print(np.corrcoef(finReturnScores['AAPL'][:75], finReturnScores['FB'][:75])[0, 1])
+
 #plt.plot(X, finReturnScore, color="red")
 #plt.plot(X, intergratedScore, color="black")
 

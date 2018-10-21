@@ -30,7 +30,7 @@ def request_data():
     request_url = "https://api.marquee.gs.com/v1/data/USCANFPP_MINI/query"
     reference_request_url = 'https://api.marquee.gs.com/v1/assets/data/query'
 
-    companies = ['AAPL', 'GOOGL', 'FB', 'MSFT']
+    companies = ['AAPL', 'FB']
     request_query = {
         "where": {
             "ticker": companies
@@ -87,9 +87,9 @@ def correlation_calculations(data, companies):
     print({comp: len(growthScores[comp]) for comp in companies})
 
 
-    print(np.corrcoef(F0D_growthScores['AAPL'], F0D_growthScores['FB'])[0, 1])
-    plt.plot(range(X['AAPL'] - 1), F0D_growthScores['AAPL'], color="green")
-    plt.plot(range(X['FB'] - 1), F0D_growthScores['FB'], color="blue")
+    print(np.corrcoef(F0D_finReturnScores['AAPL'], F0D_finReturnScores['FB'])[0, 1])
+    plt.plot(range(X['AAPL'] - 1), F0D_finReturnScores['AAPL'], color="green")
+    plt.plot(range(X['FB'] - 1), F0D_finReturnScores['FB'], color="blue")
 
     plt.show()
 
