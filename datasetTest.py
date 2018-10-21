@@ -2,6 +2,7 @@ import requests
 import json
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
 
 auth_data = {
     "grant_type"    : "client_credentials",
@@ -78,6 +79,8 @@ print({comp: len(growthScores[comp]) for comp in companies})
 fig, ax = plt.subplots()
 plt.plot(range(X['AAPL']), finReturnScores['AAPL'], color="green")
 plt.plot(range(X['FB']), finReturnScores['FB'], color="blue")
+
+#print(np.corrcoef(finReturnScores['AAPL'][:75], finReturnScores['FB'][:75])[0, 1])
 #plt.plot(X, finReturnScore, color="red")
 #plt.plot(X, intergratedScore, color="black")
 
