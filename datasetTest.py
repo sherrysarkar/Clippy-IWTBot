@@ -29,57 +29,55 @@ request_url = "https://api.marquee.gs.com/v1/data/USCANFPP_MINI/query"
 reference_request_url = 'https://api.marquee.gs.com/v1/assets/data/query'
 
 
+companies = ['AAPL', 'GOOGL', 'FB', 'MSFT']
 request_query = {
                     "where": {
-                        "gsid": ["901237"]
+                        "ticker": companies
                     },
-                    "startDate": "2017-01-15",
-                    "endDate":"2018-01-15",
+                    "startDate": '2017-01-15',
+                    "endDate":'2018-01-15'
                }
 
-reference_query = {
-    "where": {
-        "ticker": [ "GOOG", "AAPL", "FB", "MSFT" ]
-    },
-    "fields": [ "gsid", "ticker", 'name'],
-    "limit": 1000
-}
 
+# coverage = session.get(url=coverage_request_url)
+# coverage_data = json.loads(coverage.text)
+# print(coverage_data)
 
-#coverage = session.get(url=coverage_request_url)
-#coverage_data = json.loads(coverage.text)
-#print(coverage_data)
-
-reference = session.post(url=reference_request_url, json=reference_query)
-reference_data = json.loads(reference.text)
-#print(reference_data)
+# reference = session.post(url=reference_request_url, json=reference_query)
+# reference_data = json.loads(reference.text)
+# print(reference_data)
 
 request = session.post(url=request_url, json=request_query)
 results = json.loads(request.text)
-print(results["data"][1])
+data = results['data']
+
+print(data[0])
 
 ###### Graphing #######
 
 # 'growthScore': 0.234, 'multipleScore': 0.076, 'gsid': '901237', 'financialReturnsScore': 0.71,'c': 0.624
 
-data = results["data"]
 
-growthScore = []
-multipleScore = []
-finReturnScore = []
-intergratedScore = []
-X = []
+growthScores = {company: [] for company in companies}
+multipleScores = {company: [] for company in companies}
+finReturnScores = {company: [] for company in companies}
+intergratedScores = {company: [] for company in companies}
+X = {company: 0 for company in companies}
 
 for j, entry in enumerate(data):
-    growthScore.append(entry['growthScore'])
-    multipleScore.append(entry['multipleScore'])
-    finReturnScore.append(entry['financialReturnsScore'])
-    intergratedScore.append(entry['integratedScore'])
-    X.append(j)
+    comp = entry['ticker']
+    growthScores[comp].append(entry['growthScore'])
+    multipleScores[comp].append(entry['multipleScore'])
+    finReturnScores[comp].append(entry['financialReturnsScore'])
+    intergratedScores[comp].append(entry['integratedScore'])
+    X[comp] += 1
+
+
+print({comp: len(growthScores[comp]) for comp in companies})
 
 fig, ax = plt.subplots()
-plt.plot(X, growthScore, color="green")
-plt.plot(X, multipleScore, color="blue")
+plt.plot(range(X['AAPL']), finReturnScores['AAPL'], color="green")
+plt.plot(range(X['FB']), finReturnScores['FB'], color="blue")
 #plt.plot(X, finReturnScore, color="red")
 #plt.plot(X, intergratedScore, color="black")
 
@@ -89,4 +87,3 @@ ax.set(xlabel='time (days)', ylabel='Scores',
 ax.grid()
 
 plt.show()
-
